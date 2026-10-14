@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estações de História · Escolha sua atividade</title>
+  <style>
+    :root{font-family:Arial,sans-serif;color:#172a36;background:#e9edf0}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px}
+    main{width:min(100%,920px);background:#fcfaf6;padding:clamp(24px,5vw,54px);box-shadow:0 12px 45px #0a243020;border-top:7px solid #c92935}
+    .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:#bc2733}
+    h1{font-size:clamp(34px,5vw,58px);line-height:1.05;margin:12px 0}p{line-height:1.5;color:#40535d}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:28px 0}
+    .card{padding:22px;border:2px solid #d6dfdd;background:white;border-radius:10px;cursor:pointer;text-align:left;color:inherit}
+    .card:hover,.card:focus-visible,.card.selected{border-color:#24735d;background:#edf5f1;outline:none}
+    .card strong{display:block;font-size:27px;margin-bottom:8px}.card span{font-size:15px;line-height:1.4;color:#50616a}
+    .pick{display:flex;align-items:end;gap:14px;flex-wrap:wrap;border-top:1px solid #d9dfdf;padding-top:24px}
+    label{display:grid;gap:7px;font-weight:800}select{font:inherit;min-width:165px;border:1px solid #96aaa3;background:white;border-radius:6px;padding:11px}
+    #start{font:inherit;border:0;background:#1d564b;color:white;padding:12px 24px;border-radius:6px;font-weight:800;cursor:pointer}
+    #start:disabled{opacity:.45;cursor:not-allowed}.note{font-size:13px;margin-top:25px}
+    @media(max-width:650px){.choices{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Estações de História</div>
+  <h1>Escolha sua atividade</h1>
+  <p>Selecione sua série e turma. Cada turma tem seu próprio grupo de seis animais e ranking.</p>
+  <div class="choices" role="group" aria-label="Escolher série">
+    <button class="card" type="button" data-grade="2" aria-pressed="false"><strong>2ª série</strong><span>Governo Dutra, Guerra Fria e Constituição de 1946</span></button>
+    <button class="card" type="button" data-grade="9" aria-pressed="false"><strong>9º ano</strong><span>Revoluções Industriais e transformações da produção</span></button>
+  </div>
+  <div class="pick">
+    <label for="classroom">Turma<select id="classroom" disabled><option value="">Escolha a série primeiro</option></select></label>
+    <button id="start" type="button" disabled>Começar →</button>
+  </div>
+  <p class="note">Para outra sala, volte a esta página e escolha a série e a turma correspondentes.</p>
+</main>
+<script>
+  let grade='';
+  const cards=[...document.querySelectorAll('.card')],classroom=document.querySelector('#classroom'),start=document.querySelector('#start');
+  cards.forEach(card=>card.addEventListener('click',()=>{
+    grade=card.dataset.grade;
+    cards.forEach(c=>{c.classList.toggle('selected',c===card);c.setAttribute('aria-pressed',String(c===card))});
+    classroom.innerHTML=`<option value="">Escolha a turma</option>${['A','B','C'].map(letter=>`<option value="${grade}${letter}">${grade}${letter}</option>`).join('')}`;
+    classroom.disabled=false;start.disabled=true;classroom.focus();
+  }));
+  classroom.addEventListener('change',()=>{start.disabled=!classroom.value});
+  start.addEventListener('click',()=>{
+    if(!grade||!classroom.value)return;
+    location.href=`${grade==='2'?'segunda-serie.html':'nono-ano.html'}?turma=${encodeURIComponent(classroom.value)}`;
+  });
+</script>
+</body>
+</html>
